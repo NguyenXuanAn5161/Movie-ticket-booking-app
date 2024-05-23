@@ -72,7 +72,11 @@ const ProfileScreen = ({ navigation }) => {
         {isLogged ? (
           <View style={styles.userInfoContainer}>
             <View style={styles.userInfo}>
-              <CImage image={"../../assets/images/logo-VNPAY.png"} />
+              <CImage
+              // image={
+              //   "../../assets/avatar-cute-cho-co-nang-nghien-tra-sua.jpg"
+              // }
+              />
               {/* <Image
                 source={user?.avatar ? { uri: user?.avatar } : avatarDefault}
                 style={styles.avatar}
