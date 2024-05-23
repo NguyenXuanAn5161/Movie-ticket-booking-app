@@ -91,7 +91,7 @@ export const callUpdatePassWord = async (id, pw, newPw, cfNewPw) => {
     );
     return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
+    if (error?.response?.data) {
       console.log("error api update pass: ", error.response.data.message);
       return error.response.data;
     } else {

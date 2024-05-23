@@ -22,6 +22,10 @@ const HistoryInvoice = ({ navigation }) => {
 
   const user = useSelector((state) => state.user.user);
 
+  useEffect(() => {
+    console.log(">>> check invoices: ", invoices);
+  }, [invoices]);
+
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -44,15 +48,18 @@ const HistoryInvoice = ({ navigation }) => {
     }
   };
 
-  const handleDetailInvoice = (invoiceId) => {
-    navigation.navigate("InvoiceDetail", { invoiceId });
+  const handleDetailInvoice = (invoiceId, cancel) => {
+    navigation.navigate("InvoiceDetail", { invoiceId, cancel });
   };
 
   const renderInvoice = ({ item }) => (
     <TouchableOpacity
-      style={styles.invoiceItem}
-      onPress={() => handleDetailInvoice(item?.id)}
+      style={[styles.invoiceItem]}
+      onPress={() => handleDetailInvoice(item?.id, item?.status)}
     >
+      {!item.status && (
+        <Text style={[styles.invoiceText, styles.cancelText]}>Đã hủy</Text>
+      )}
       <View style={styles.invoiceView}>
         <Text style={styles.boldText}>Mã hóa đơn: </Text>
         <Text style={styles.invoiceText}>{item.code}</Text>

@@ -137,3 +137,35 @@ export const formatDateTime = (dateTime) => {
   const time = dateTime.split(" ")[1];
   return `${time} ${date.split("-").reverse().join("/")}`;
 };
+
+// Hàm kiểm tra xem nếu ngày hiện tại nhỏ hơn ngày đầu vào thì trả về true, nếu ngày hiện tại bằng ngày đầu vào thì kiểm tra giờ
+// Nếu giờ hiện tại nhỏ hơn giờ đầu vào 2 tiếng thì trả về true, ngược lại trả về false
+export const checkDate = (date) => {
+  // lấy ngày hiện tại
+  const currentDate = new Date();
+  // lấy ngày đầu vào
+  const inputDate = new Date(date);
+  // so sánh ngày
+  return currentDate < inputDate;
+};
+
+export const checkTime = (time) => {
+  // lấy giờ hiện tại
+  const currentTime = new Date();
+  // lấy giờ đầu vào
+  const inputTime = new Date(time);
+  // so sánh giờ
+  return currentTime < inputTime;
+};
+
+export const checkDateTime = (date, time) => {
+  console.log("check date: ", checkDate(date));
+  console.log("check time: ", checkTime(time));
+  if (checkDate(date)) {
+    return true;
+  } else if (checkTime(time)) {
+    return true;
+  } else {
+    return false;
+  }
+};

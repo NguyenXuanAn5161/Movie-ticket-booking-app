@@ -48,6 +48,12 @@ export default StyleSheet.create({
   invoiceText: {
     fontSize: 16,
   },
+  cancelText: {
+    fontSize: 16,
+    color: COLORS.error,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
   errorText: {
     fontSize: 16,
     color: COLORS.error,

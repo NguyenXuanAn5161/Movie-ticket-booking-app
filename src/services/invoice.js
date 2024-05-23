@@ -79,7 +79,7 @@ export const getInvoiceDetail = async (invoiceId) => {
 export const cancelInvoice = async (invoiceId, reason) => {
   try {
     const response = await axios.post(
-      `/api/invoice/cancel?${invoiceId}&reason=${reason}`
+      `/api/invoice/cancel?invoiceId=${invoiceId}&reason=${reason}`
     );
     return response.data;
   } catch (error) {

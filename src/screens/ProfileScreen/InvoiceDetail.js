@@ -18,16 +18,22 @@ import Toast from "react-native-toast-message";
 import Divider from "../../components/Divider/Divider";
 import { cancelInvoice, getInvoiceDetail } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
-import { dateFormat, formatTime, getDayInfo } from "../../utils/formatData";
+import {
+  checkDateTime,
+  dateFormat,
+  formatTime,
+  getDayInfo,
+} from "../../utils/formatData";
 
 const { width, height } = Dimensions.get("window");
 
 const InvoiceDetail = ({ navigation, route }) => {
-  const { invoiceId } = route.params;
-  console.log(invoiceId);
+  const { invoiceId, cancel } = route.params;
+  console.log(cancel);
 
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
 
@@ -40,6 +46,7 @@ const InvoiceDetail = ({ navigation, route }) => {
   const fetchInvoiceDetail = async (invoiceId) => {
     try {
       const response = await getInvoiceDetail(invoiceId);
+      console.log("invoice detail: ", response);
       if (response) {
         setInvoiceDetail(response);
       } else {
@@ -183,23 +190,24 @@ const InvoiceDetail = ({ navigation, route }) => {
       });
       return;
     }
-
+    setIsSubmit(true);
     const resCancel = await cancelInvoice(invoiceId, cancelReason);
+    setIsSubmit(false);
     console.log(">>>> resCancel", resCancel);
-    if (resCancel) {
+    if (resCancel?.status === 200) {
       Toast.show({
         type: "success",
         text1: "Hủy vé thành công",
       });
+      setCancelReason("");
+      setCancelModalVisible(false);
       handleGoBack();
     } else {
       Toast.show({
         type: "error",
-        text1: "Hủy vé thất bại",
-        text2: resCancel.message,
+        text1: resCancel.message,
       });
     }
-    setCancelModalVisible(false);
   };
 
   return (
@@ -223,13 +231,55 @@ const InvoiceDetail = ({ navigation, route }) => {
             <ScrollView style={{ flex: 1 / 2 }}>
               <View style={{ flex: 1 }}>{renderTicket(invoiceDetail)}</View>
             </ScrollView>
+            {checkDateTime(
+              invoiceDetail?.showTimeDto?.showDate,
+              invoiceDetail?.showTimeDto?.showTime
+            ) ? (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  disabled={!cancel}
+                  onPress={() => setCancelModalVisible(true)}
+                >
+                  <Text
+                    style={[
+                      styles.cancelButton,
+                      {
+                        borderColor: cancel ? COLORS.error : COLORS.DarkGrey,
+                        color: cancel ? COLORS.error : COLORS.DarkGrey,
+                      },
+                    ]}
+                  >
+                    {cancel ? "Hủy" : "Đã hủy"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginBottom: 10,
+                  fontSize: FONTSIZE.size_18,
+                  fontWeight: "500",
+                  color: COLORS.warning,
+                }}
+              >
+                Chỉ thể hủy trước giờ chiếu 2 tiếng
+              </Text>
+            )}
           </View>
         ) : (
           <Text>No data available</Text>
         )}
-        <TouchableOpacity onPress={() => setCancelModalVisible(true)}>
-          <Text style={styles.cancelButton}>Hủy</Text>
-        </TouchableOpacity>
       </View>
       <Modal
         animationType="slide"
@@ -251,15 +301,23 @@ const InvoiceDetail = ({ navigation, route }) => {
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.buttonCancel}
-                onPress={() => setCancelModalVisible(false)}
+                onPress={() => {
+                  setCancelReason("");
+                  setCancelModalVisible(false);
+                }}
               >
                 <Text style={styles.buttonText}>Quay lại</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.buttonSubmit}
                 onPress={handleCancel}
+                disabled={isSubmit}
               >
-                <Text style={styles.buttonText}>Hủy vé</Text>
+                {isSubmit ? (
+                  <ActivityIndicator size="small" color={COLORS.White} />
+                ) : (
+                  <Text style={styles.buttonText}>Hủy vé</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -312,6 +370,8 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     color: COLORS.error,
+    borderColor: COLORS.error,
+    width: "30%",
     textAlign: "center",
     marginBottom: 10,
     borderWidth: 1,
@@ -353,6 +413,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
+    borderRadius: 5,
   },
   modalButtons: {
     flexDirection: "row",
@@ -360,16 +421,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonCancel: {
-    backgroundColor: COLORS.LightGrey,
+    backgroundColor: COLORS.DarkGrey,
     padding: 10,
     borderRadius: 10,
   },
   buttonSubmit: {
-    backgroundColor: COLORS.Red,
+    backgroundColor: COLORS.error,
     padding: 10,
     borderRadius: 10,
   },
   buttonText: {
-    color: "white",
+    color: COLORS.White,
   },
 });
