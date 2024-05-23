@@ -5,14 +5,15 @@ import { Image, StyleSheet, View } from "react-native";
 const CImage = ({ image }) => {
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} />
+      <Image source={{ uri: image }} style={styles.image} />
     </View>
   );
 };
 
-// CImage.defaultProps = {
-//   image: require("../../assets/images/avatarDefault.png"),
-// };
+CImage.defaultProps = {
+  image:
+    "https://kynguyenlamdep.com/wp-content/uploads/2022/06/avatar-cute-cho-co-nang-nghien-tra-sua.jpg",
+};
 
 // CImage.propTypes = {
 //   image: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
