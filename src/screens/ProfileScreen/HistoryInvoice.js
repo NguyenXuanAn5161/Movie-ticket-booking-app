@@ -34,6 +34,7 @@ const HistoryInvoice = ({ navigation }) => {
 
   const fetchInvoices = async (userId) => {
     try {
+      setLoading(true);
       const response = await getInvoicesByUserId(userId);
       setInvoices(response);
     } catch (error) {
@@ -73,9 +74,9 @@ const HistoryInvoice = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ActivityIndicator size="large" color={COLORS.Primary} />
-      </View>
+      </SafeAreaView>
     );
   }
 
