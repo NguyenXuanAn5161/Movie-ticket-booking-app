@@ -75,3 +75,15 @@ export const getInvoiceDetail = async (invoiceId) => {
     return error.response.data;
   }
 };
+
+export const cancelInvoice = async (invoiceId, reason) => {
+  try {
+    const response = await axios.post(
+      `/api/invoice/cancel?${invoiceId}&reason=${reason}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log("Error canceling invoice:", error.response.data.message);
+    return error.response.data;
+  }
+};

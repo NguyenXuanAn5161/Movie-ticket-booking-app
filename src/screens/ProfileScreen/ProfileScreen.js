@@ -3,7 +3,9 @@ import { React } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
+import CImage from "../../components/Custom/CImage";
 import Divider from "../../components/Divider/Divider";
+import ExpenseSlider from "../../components/slider/ExpenseSlider";
 import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
 import { doSetUser } from "../../redux/user/userSlice";
 import { COLORS } from "../../theme/theme";
@@ -70,10 +72,11 @@ const ProfileScreen = ({ navigation }) => {
         {isLogged ? (
           <View style={styles.userInfoContainer}>
             <View style={styles.userInfo}>
-              <Image
-                source={require("../../assets/images/avatarDefault.png")}
+              <CImage image={"../../assets/images/logo-VNPAY.png"} />
+              {/* <Image
+                source={user?.avatar ? { uri: user?.avatar } : avatarDefault}
                 style={styles.avatar}
-              />
+              /> */}
               <Text style={styles.userName}>{user?.username}</Text>
             </View>
             <View style={styles.btnLoggedContainer}>
@@ -92,9 +95,9 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.buttonLoggedText}>Giao dịch</Text>
               </TouchableOpacity>
             </View>
-            {/* <View style={styles.expenseLoggedContainer}>
+            <View style={styles.expenseLoggedContainer}>
               <ExpenseSlider />
-            </View> */}
+            </View>
           </View>
         ) : (
           <View style={[styles.main, styles.main1]}>

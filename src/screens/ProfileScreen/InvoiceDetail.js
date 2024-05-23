@@ -4,9 +4,11 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -14,7 +16,7 @@ import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Divider from "../../components/Divider/Divider";
-import { getInvoiceDetail } from "../../services/invoice";
+import { cancelInvoice, getInvoiceDetail } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { dateFormat, formatTime, getDayInfo } from "../../utils/formatData";
 
@@ -26,6 +28,8 @@ const InvoiceDetail = ({ navigation, route }) => {
 
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cancelModalVisible, setCancelModalVisible] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
 
   useEffect(() => {
     if (invoiceId) {
@@ -157,10 +161,11 @@ const InvoiceDetail = ({ navigation, route }) => {
           Khuyến mãi đã nhận được:
         </Text>
         <View style={{ backgroundColor: COLORS.White, padding: 10 }}>
-          {invoiceDetail.promotionLineDtos &&
-            invoiceDetail.promotionLineDtos.map((promotion) => (
-              <Text style={styles.boldText}>{promotion.name}</Text>
-            ))}
+          {invoiceDetail?.promotionLineDtos.map((promotion, index) => (
+            <Text key={promotion?.id || index} style={styles.boldText}>
+              {promotion.name}
+            </Text>
+          ))}
         </View>
       </View>
     );
@@ -168,6 +173,33 @@ const InvoiceDetail = ({ navigation, route }) => {
 
   const handleGoBack = () => {
     navigation.goBack();
+  };
+
+  const handleCancel = async () => {
+    if (!cancelReason) {
+      Toast.show({
+        type: "error",
+        text1: "Vui lòng nhập lý do hủy",
+      });
+      return;
+    }
+
+    const resCancel = await cancelInvoice(invoiceId, cancelReason);
+    console.log(">>>> resCancel", resCancel);
+    if (resCancel) {
+      Toast.show({
+        type: "success",
+        text1: "Hủy vé thành công",
+      });
+      handleGoBack();
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Hủy vé thất bại",
+        text2: resCancel.message,
+      });
+    }
+    setCancelModalVisible(false);
   };
 
   return (
@@ -195,7 +227,44 @@ const InvoiceDetail = ({ navigation, route }) => {
         ) : (
           <Text>No data available</Text>
         )}
+        <TouchableOpacity onPress={() => setCancelModalVisible(true)}>
+          <Text style={styles.cancelButton}>Hủy</Text>
+        </TouchableOpacity>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={cancelModalVisible}
+        onRequestClose={() => {
+          setCancelModalVisible(!cancelModalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Hủy hóa đơn</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nhập lý do hủy"
+              value={cancelReason}
+              onChangeText={setCancelReason}
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.buttonCancel}
+                onPress={() => setCancelModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Quay lại</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonSubmit}
+                onPress={handleCancel}
+              >
+                <Text style={styles.buttonText}>Hủy vé</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -240,5 +309,67 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     resizeMode: "contain",
     backgroundColor: COLORS.Pink,
+  },
+  cancelButton: {
+    color: COLORS.error,
+    textAlign: "center",
+    marginBottom: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: FONTSIZE.size_16,
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalContent: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: FONTSIZE.size_18,
+    fontWeight: "bold",
+  },
+  input: {
+    width: width * 0.8,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 15,
+    paddingLeft: 10,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  buttonCancel: {
+    backgroundColor: COLORS.LightGrey,
+    padding: 10,
+    borderRadius: 10,
+  },
+  buttonSubmit: {
+    backgroundColor: COLORS.Red,
+    padding: 10,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "white",
   },
 });
