@@ -22,6 +22,7 @@ import HistoryInvoice from "./src/screens/ProfileScreen/HistoryInvoice";
 import InvoiceDetail from "./src/screens/ProfileScreen/InvoiceDetail";
 import SignIn from "./src/screens/ProfileScreen/SignIn";
 import SignUp from "./src/screens/ProfileScreen/SignUp";
+import UpdatePW from "./src/screens/ProfileScreen/UpdatePW";
 import UpdateUser from "./src/screens/ProfileScreen/UpdateUser";
 import { CallGetUserById } from "./src/services/UserAPI";
 import { checkUserDataInAsyncStorage } from "./src/utils/AsyncStorage";
@@ -83,6 +84,7 @@ const AppNavigator = () => {
         <Stack.Screen name="VerifyPayment" component={VnPayVerify} />
         <Stack.Screen name="HistoryInvoice" component={HistoryInvoice} />
         <Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
+        <Stack.Screen name="UpdatePW" component={UpdatePW} />
       </Stack.Navigator>
     </NavigationContainer>
   );

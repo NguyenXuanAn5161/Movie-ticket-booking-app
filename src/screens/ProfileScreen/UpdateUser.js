@@ -124,6 +124,10 @@ const UpdateUser = ({ navigation }) => {
     isFormChanged();
   }, [userName, phoneNumber, gender, dateOfBirth]);
 
+  const handleNavigation = () => {
+    navigation.navigate("UpdatePW");
+  };
+
   return (
     <SafeAreaView style={[styles.wrapper, styles.containerSign]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -192,6 +196,11 @@ const UpdateUser = ({ navigation }) => {
                 <Text style={styles.textBtn}>Cập nhật</Text>
               </TouchableOpacity>
             </View>
+          </View>
+          <View style={styles.updatePW}>
+            <TouchableOpacity onPress={() => handleNavigation()}>
+              <Text style={styles.updatePW}>Cập nhật mật khẩu</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAwareScrollView>
       </View>

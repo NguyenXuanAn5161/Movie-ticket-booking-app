@@ -83,3 +83,20 @@ export const CallUpdateUser = async (
     }
   }
 };
+
+export const callUpdatePassWord = async (id, pw, newPw, cfNewPw) => {
+  try {
+    const res = await axios.post(
+      `/api/user/password?id=${id}&oldPassword=${pw}&newPassword=${newPw}&confirmPassword=${cfNewPw}`
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      console.log("error api update pass: ", error.response.data.message);
+      return error.response.data;
+    } else {
+      console.log("error api update pass: ", error.message);
+      return { message: error.message };
+    }
+  }
+};

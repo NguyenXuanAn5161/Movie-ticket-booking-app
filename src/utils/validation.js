@@ -40,12 +40,22 @@ export const validatePhoneNumber = (phoneNumber) => {
   }
 };
 
-export const validatePassword = (password) => {
-  if (password === "") {
+export const validatePassword = (password, newPassword = null) => {
+  if (newPassword !== null && newPassword === password) {
+    return "Mật khẩu mới phải khác với mật khẩu cũ!";
+  } else if (password === "") {
     return "Mật khẩu không được để trống";
   } else if (!regexes.password.test(password)) {
     return "Mật khẩu phải chứa ít nhất 1 ký tự hoa, 1 chữ số, và có ít nhất 6 ký tự!";
   } else {
     return "";
+  }
+};
+
+export const comparePassword = (password, confirmPassword) => {
+  if (password === confirmPassword) {
+    return "";
+  } else {
+    return "Mật khẩu chưa khớp";
   }
 };
