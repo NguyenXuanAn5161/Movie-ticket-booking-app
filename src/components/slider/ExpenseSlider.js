@@ -1,24 +1,30 @@
-import React, { useState } from "react";
-import { Dimensions, PanResponder, StyleSheet, Text, View } from "react-native";
-
-const { width } = Dimensions.get("window");
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
+import { getInvoicesByUserId } from "../../services/invoice";
 
 const ExpenseSlider = () => {
   const [expense, setExpense] = useState(0);
   const [sliderWidth, setSliderWidth] = useState(0);
 
-  const maxExpense = 2000000;
+  const user = useSelector((state) => state.user.user);
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (evt, gestureState) => {
-      const newExpense = Math.max(
-        0,
-        Math.min(maxExpense, (gestureState.dx / sliderWidth) * maxExpense)
-      );
-      setExpense(newExpense);
-    },
-  });
+  useEffect(() => {
+    if (user?.id) fetchInvoice(user.id);
+  }, []);
+
+  const fetchInvoice = async (id) => {
+    const resInvoice = await getInvoicesByUserId(id, 1000);
+    console.log("resInvoice: ", resInvoice);
+    const totalExpense = resInvoice.reduce(
+      (total, invoice) => total + invoice.totalPrice,
+      0
+    );
+    console.log("totalExpense: ", totalExpense);
+    setExpense(totalExpense);
+  };
+
+  const maxExpense = 4000000;
 
   const handleLayout = (event) => {
     const { width } = event.nativeEvent.layout;
@@ -31,11 +37,7 @@ const ExpenseSlider = () => {
         Chi tiêu:{" "}
         {expense.toLocaleString(undefined, { maximumFractionDigits: 0 })} VND
       </Text>
-      <View
-        style={styles.sliderContainer}
-        onLayout={handleLayout}
-        {...panResponder.panHandlers}
-      >
+      <View style={styles.sliderContainer} onLayout={handleLayout}>
         <View style={styles.sliderTrack} />
         <View
           style={[
@@ -46,8 +48,8 @@ const ExpenseSlider = () => {
       </View>
       <View style={styles.scale}>
         <Text>0</Text>
-        <Text>1,000,000</Text>
         <Text>2,000,000</Text>
+        <Text>4,000,000</Text>
       </View>
     </View>
   );

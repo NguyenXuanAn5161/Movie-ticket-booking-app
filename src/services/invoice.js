@@ -54,9 +54,11 @@ export const verifyPayment = async (queryParams) => {
   }
 };
 
-export const getInvoicesByUserId = async (userId) => {
+export const getInvoicesByUserId = async (userId, size = 20) => {
   try {
-    const response = await axios.get(`/api/invoice?userId=${userId}`);
+    const response = await axios.get(
+      `/api/invoice?size=${size}&userId=${userId}`
+    );
     return response.data.content;
   } catch (error) {
     console.log("Error fetching invoices:", error.response.data.message);
