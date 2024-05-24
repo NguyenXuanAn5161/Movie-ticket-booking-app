@@ -87,7 +87,7 @@ export const CallUpdateUser = async (
 export const callUpdatePassWord = async (id, pw, newPw, cfNewPw) => {
   try {
     const res = await axios.post(
-      `/api/user/password?id=${id}&oldPassword=${pw}&newPassword=${newPw}&confirmPassword=${cfNewPw}`
+      `/api/users/password?id=${id}&oldPassword=${pw}&newPassword=${newPw}&confirmPassword=${cfNewPw}`
     );
     return res.data;
   } catch (error) {

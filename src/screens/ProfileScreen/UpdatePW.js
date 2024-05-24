@@ -20,6 +20,7 @@ const UpdatePW = ({ navigation }) => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [confirmNewErrorPassword, setConfirmNewErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -63,12 +64,14 @@ const UpdatePW = ({ navigation }) => {
     ) {
       return;
     }
+    setIsSubmit(true);
     const resUpdatePass = await callUpdatePassWord(
       user.id,
       password,
       newPassword,
       confirmNewPassword
     );
+
     console.log("resUpdatePass: ", resUpdatePass);
     if (resUpdatePass?.status === 200) {
       Toast.show({
@@ -78,6 +81,7 @@ const UpdatePW = ({ navigation }) => {
         visibilityTime: 2000,
         autoHide: true,
       });
+      setIsSubmit(false);
       navigation.goBack();
     } else {
       Toast.show({
@@ -88,6 +92,7 @@ const UpdatePW = ({ navigation }) => {
         autoHide: true,
         text2Style: { fontSize: 13 },
       });
+      setIsSubmit(false);
     }
   };
 
@@ -146,9 +151,13 @@ const UpdatePW = ({ navigation }) => {
                   },
                 ]}
                 onPress={() => handleSubmit()}
-                disabled={!isFormChanged()}
+                disabled={!isFormChanged() || isSubmit}
               >
-                <Text style={styles.textBtn}>Cập nhật</Text>
+                {isSubmit ? (
+                  <ActivityIndicator size="small" color={COLORS.White} />
+                ) : (
+                  <Text style={styles.textBtn}>Cập nhật</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
