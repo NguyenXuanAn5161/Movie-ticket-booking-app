@@ -152,8 +152,22 @@ export const checkDate = (date) => {
 export const checkTime = (time) => {
   // lấy giờ hiện tại
   const currentTime = new Date();
-  // lấy giờ đầu vào
-  const inputTime = new Date(time);
+
+  // tách giờ và phút từ chuỗi time
+  const [hours, minutes] = time.split(":").map(Number);
+
+  // tạo đối tượng Date cho thời gian đầu vào với ngày hiện tại
+  const inputTime = new Date(
+    currentTime.getFullYear(),
+    currentTime.getMonth(),
+    currentTime.getDate(),
+    hours,
+    minutes
+  );
+
+  console.log("currentTime: ", currentTime);
+  console.log("inputTime: ", inputTime);
+
   // so sánh giờ
   return currentTime < inputTime;
 };

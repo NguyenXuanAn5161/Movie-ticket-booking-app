@@ -15,6 +15,7 @@ import {
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
 import Divider from "../../components/Divider/Divider";
 import { cancelInvoice, getInvoiceDetail } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
@@ -28,8 +29,10 @@ import {
 const { width, height } = Dimensions.get("window");
 
 const InvoiceDetail = ({ navigation, route }) => {
-  const { invoiceId, cancel } = route.params;
-  console.log(cancel);
+  const { invoiceId, cancel, fetchInvoices } = route.params;
+  console.log("cancel", cancel);
+
+  const user = useSelector((state) => state.user.user);
 
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -201,6 +204,7 @@ const InvoiceDetail = ({ navigation, route }) => {
       });
       setCancelReason("");
       setCancelModalVisible(false);
+      fetchInvoices(user?.id);
       handleGoBack();
     } else {
       Toast.show({

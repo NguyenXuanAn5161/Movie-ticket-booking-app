@@ -83,8 +83,7 @@ const UpdatePW = ({ navigation }) => {
       Toast.show({
         type: "error",
         position: "top",
-        text1: "Cập nhật thất bại",
-        text2: resUpdatePass?.message,
+        text1: resUpdatePass?.message,
         visibilityTime: 2000,
         autoHide: true,
         text2Style: { fontSize: 13 },

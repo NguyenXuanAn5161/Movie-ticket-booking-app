@@ -49,7 +49,7 @@ const HistoryInvoice = ({ navigation }) => {
   };
 
   const handleDetailInvoice = (invoiceId, cancel) => {
-    navigation.navigate("InvoiceDetail", { invoiceId, cancel });
+    navigation.navigate("InvoiceDetail", { invoiceId, cancel, fetchInvoices });
   };
 
   const renderInvoice = ({ item }) => (
