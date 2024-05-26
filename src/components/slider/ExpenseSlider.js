@@ -16,10 +16,12 @@ const ExpenseSlider = () => {
   const fetchInvoice = async (id) => {
     const resInvoice = await getInvoicesByUserId(id, 1000);
     console.log("resInvoice: ", resInvoice);
-    const totalExpense = resInvoice.reduce(
-      (total, invoice) => total + invoice.totalPrice,
-      0
-    );
+    const totalExpense = resInvoice.reduce((total, invoice) => {
+      if (invoice.status) {
+        return total + invoice.totalPrice;
+      }
+      return total;
+    }, 0);
     console.log("totalExpense: ", totalExpense);
     setExpense(totalExpense);
   };
